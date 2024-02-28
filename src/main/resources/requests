@@ -1,0 +1,18 @@
+          SELECT array_agg(comments)
+          FROM comments where post_id = 8;
+
+SELECT u.first_name,
+       u.last_name,
+       p.post_id,
+       p.date_posted,
+       p.text,
+
+       (SELECT array_agg(c)FROM comments c WHERE p.post_id = c.post_id) AS comments,
+       (SELECT count(*)FROM likes l WHERE p.post_id = l.post_id) AS likes
+
+FROM posts p
+left join subscriptions s ON s.to_user_id = p.user_id
+left join users u on p.user_id = u.user_id
+WHERE s.from_user_id = 1
+ORDER BY p.date_posted DESC
+
